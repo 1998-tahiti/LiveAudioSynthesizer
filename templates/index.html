@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Live Audio Synthesizer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLvbs0GO1p5yKnvxUxYTvL03MJ2loadOdXGxnQbQ5UK3z0C"
+      crossorigin="anonymous"
+    >
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 10px;
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+      }
+      .container {
+        max-width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .title {
+        text-align: center;
+        margin-bottom: 5px;
+        color: #343a40;
+        font-size: 1.5rem;
+      }
+      .subtitle {
+        text-align: center;
+        color: #6c757d;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+      }
+      .main-content {
+        flex-grow: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .col-md-7, .col-md-5 {
+        padding: 0;
+      }
+      .col-md-7 {
+        flex: 0 0 64%;
+      }
+      .col-md-5 {
+        flex: 0 0 35%;
+      }
+      .panel {
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        margin-bottom: 10px;
+        border: 1px solid #e9ecef;
+        height: calc(50% - 5px);
+        display: flex;
+        flex-direction: column;
+      }
+      .panel-header {
+        background: #495057;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px 6px 0 0;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+      .panel-body {
+        padding: 10px;
+        overflow: hidden;
+        flex-grow: 1;
+      }
+      .key {
+        width: 40px;
+        height: 100px;
+        margin: 0 3px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 5px;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.1s;
+        font-size: 0.75rem;
+      }
+      .key.active {
+        background: #28a745;
+        color: white;
+        transform: translateY(2px);
+      }
+      .key-label {
+        font-weight: bold;
+      }
+      .key-note {
+        font-size: 0.6rem;
+        color: #6c757d;
+        margin-top: 2px;
+      }
+      .key.active .key-note {
+        color: rgba(255,255,255,0.8);
+      }
+      .keyboard-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      #visualizer {
+        width: 100%;
+        height: 100px;
+        background: #495057;
+        border-radius: 5px;
+      }
+      #status {
+        background: #e9ecef;
+        padding: 6px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 0.8rem;
+      }
+      .parameter-control {
+        margin-bottom: 8px;
+      }
+      .parameter-display {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        font-size: 0.8rem;
+      }
+      .parameter-value {
+        font-weight: bold;
+      }
+      .parameter-controls {
+        display: flex;
+        align-items: center;
+      }
+      .parameter-slider {
+        flex-grow: 1;
+        margin: 0 5px;
+      }
+      .control-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50% !important;
+        padding: 0;
+        font-weight: bold;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">Live Audio Synthesizer</h1>
+      <div class="subtitle">
+          6183 DSP Lab – Spring 2025 Final Project<br>
+          Submitted to: Dr. Ivan Selesnick<br>
+          Prepared by: Tasnia Jasim Tahiti & Mohammed Shakil
+      </div>
+      <div class="main-content">
+        <div class="col-md-7">
+          <div class="panel">
+            <div class="panel-header">String Keyboard</div>
+            <div class="panel-body">
+              <div class="keyboard-row">
+                <div class="key" data-key="a">
+                  <div>
+                    <div class="key-label">A</div>
+                    <div class="key-note">E4</div>
+                  </div>
+                </div>
+                <div class="key" data-key="s">
+                  <div>
+                    <div class="key-label">S</div>
+                    <div class="key-note">B3</div>
+                  </div>
+                </div>
+                <div class="key" data-key="d">
+                  <div>
+                    <div class="key-label">D</div>
+                    <div class="key-note">G3</div>
+                  </div>
+                </div>
+                <div class="key" data-key="f">
+                  <div>
+                    <div class="key-label">F</div>
+                    <div class="key-note">D3</div>
+                  </div>
+                </div>
+                <div class="key" data-key="g">
+                  <div>
+                    <div class="key-label">G</div>
+                    <div class="key-note">A2</div>
+                  </div>
+                </div>
+                <div class="key" data-key="h">
+                  <div>
+                    <div class="key-label">H</div>
+                    <div class="key-note">E2</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">Waveform</div>
+            <div class="panel-body">
+              <canvas id="visualizer" width="800" height="100"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <div class="panel">
+            <div class="panel-header">Controls</div>
+            <div class="panel-body">
+              <div class="parameter-control">
+                <div class="parameter-display">
+                  <span>Vibrato Width:</span>
+                  <span class="parameter-value" id="vibrato-width-value">0.000</span>
+                </div>
+                <div class="parameter-controls">
+                  <button class="btn btn-primary control-btn" data-command="[">-</button>
+                  <input type="range" class="parameter-slider" id="vibrato-width-slider" min="0" max="0.1" step="0.001" value="0">
+                  <button class="btn btn-primary control-btn" data-command="]">+</button>
+                </div>
+              </div>
+              <div class="parameter-control">
+                <div class="parameter-display">
+                  <span>Vibrato Freq:</span>
+                  <span class="parameter-value" id="vibrato-f0-value">1.0</span> Hz
+                </div>
+                <div class="parameter-controls">
+                  <button class="btn btn-primary control-btn" data-command="2">-</button>
+                  <input type="range" class="parameter-slider" id="vibrato-f0-slider" min="0.1" max="20" step="0.1" value="1">
+                  <button class="btn btn-primary control-btn" data-command="1">+</button>
+                </div>
+              </div>
+              <div class="parameter-control">
+                <div class="parameter-display">
+                  <span>Damping:</span>
+                  <span class="parameter-value" id="damping-value">0.996</span>
+                </div>
+                <div class="parameter-controls">
+                  <button class="btn btn-primary control-btn" data-command="4">-</button>
+                  <input type="range" class="parameter-slider" id="damping-slider" min="0.7" max="0.999" step="0.001" value="0.996">
+                  <button class="btn btn-primary control-btn" data-command="3">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">Status</div>
+            <div class="panel-body">
+              <div id="status">Ready. Press keys A-S-D-F-G-H to play strings.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.socket.io/4.1.3/socket.io.min.js"></script>
+    <script>
+      const canvas = document.getElementById('visualizer');
+      const ctx = canvas.getContext('2d');
+      const statusEl = document.getElementById('status');
+      const keys = document.querySelectorAll('.key');
+      const controlBtns = document.querySelectorAll('.control-btn');
+
+      // Parameter display elements
+      const vibratoWidthValue = document.getElementById('vibrato-width-value');
+      const vibratoF0Value = document.getElementById('vibrato-f0-value');
+      const dampingValue = document.getElementById('damping-value');
+
+      // Parameter slider elements
+      const vibratoWidthSlider = document.getElementById('vibrato-width-slider');
+      const vibratoF0Slider = document.getElementById('vibrato-f0-slider');
+      const dampingSlider = document.getElementById('damping-slider');
+
+      // Audio setup
+      const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      // Socket setup
+      const socket = io();
+
+      // Update parameter displays
+      function updateParameterDisplays(data) {
+        vibratoWidthValue.textContent = parseFloat(data.vibrato_width).toFixed(3);
+        vibratoF0Value.textContent = parseFloat(data.vibrato_f0).toFixed(1);
+        dampingValue.textContent = parseFloat(data.damping).toFixed(3);
+
+        // Update sliders without triggering change events
+        vibratoWidthSlider.value = data.vibrato_width;
+        vibratoF0Slider.value = data.vibrato_f0;
+        dampingSlider.value = data.damping;
+      }
+
+      // Key handling
+      keys.forEach(key => {
+        key.addEventListener('mousedown', () => {
+          key.classList.add('active');
+          socket.emit('control', {command: key.dataset.key});
+        });
+
+        key.addEventListener('mouseup', () => {
+          key.classList.remove('active');
+        });
+
+        key.addEventListener('mouseleave', () => {
+          key.classList.remove('active');
+        });
+      });
+
+      // Control buttons
+      controlBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          socket.emit('control', {command: btn.dataset.command});
+        });
+      });
+
+      // Slider controls
+      vibratoWidthSlider.addEventListener('input', () => {
+        const value = parseFloat(vibratoWidthSlider.value);
+        vibratoWidthValue.textContent = value.toFixed(3);
+        socket.emit('control', {command: 'width:' + value});
+      });
+
+      vibratoF0Slider.addEventListener('input', () => {
+        const value = parseFloat(vibratoF0Slider.value);
+        vibratoF0Value.textContent = value.toFixed(1);
+        socket.emit('control', {command: 'f0:' + value});
+      });
+
+      dampingSlider.addEventListener('input', () => {
+        const value = parseFloat(dampingSlider.value);
+        dampingValue.textContent = value.toFixed(3);
+        socket.emit('control', {command: 'damp:' + value});
+      });
+
+      // Keyboard events
+      document.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        const keyEl = document.querySelector(`.key[data-key="${key}"]`);
+        if (keyEl) {
+          keyEl.classList.add('active');
+          socket.emit('control', {command: key});
+        }
+      });
+
+      document.addEventListener('keyup', (e) => {
+        const key = e.key.toLowerCase();
+        const keyEl = document.querySelector(`.key[data-key="${key}"]`);
+        if (keyEl) keyEl.classList.remove('active');
+      });
+
+      // Status updates
+      socket.on('status', (data) => {
+        statusEl.textContent = data.message;
+      });
+
+      // Parameter updates from server
+      socket.on('parameter_update', (data) => {
+        updateParameterDisplays(data);
+      });
+
+      // Audio visualization
+      function drawWave() {
+        analyser.getByteTimeDomainData(dataArray);
+
+        // Clear canvas
+        ctx.fillStyle = '#495057';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw grid
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx.lineWidth = 1;
+
+        // Vertical grid lines
+        for (let x = 0; x < canvas.width; x += 50) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvas.height);
+          ctx.stroke();
+        }
+
+        // Horizontal grid lines
+        for (let y = 0; y < canvas.height; y += 20) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y);
+          ctx.stroke();
+        }
+
+        // Draw waveform
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#28a745';
+        ctx.beginPath();
+
+        const sliceWidth = canvas.width / analyser.fftSize;
+        let x = 0;
+
+        for(let i = 0; i < analyser.fftSize; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = v * canvas.height / 2;
+
+          if(i === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+
+          x += sliceWidth;
+        }
+
+        ctx.lineTo(canvas.width, canvas.height/2);
+        ctx.stroke();
+      }
+
+      // Animation loop
+      function animate() {
+        drawWave();
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Audio data handling
+      socket.on('audio_data', ({data}) => {
+        const samples = new Int16Array(data);
+        const buf = audioCtx.createBuffer(1, samples.length, 8000);
+        const ch = buf.getChannelData(0);
+
+        for (let i = 0; i < samples.length; i++) {
+          ch[i] = samples[i] / 32768;
+        }
+
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        src.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        src.start();
+      });
+    </script>
+  </body>
+</html>

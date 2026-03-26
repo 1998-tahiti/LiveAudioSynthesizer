@@ -1,0 +1,4 @@
+Flask==2.0.3
+Flask-SocketIO==5.2.0
+pyaudio==0.2.11
+numpy==1.21.4
