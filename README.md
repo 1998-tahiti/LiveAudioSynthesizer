@@ -118,5 +118,5 @@ http://localhost:5000
 ## Author
 
 Tasnia Jasim Tahiti
-Master’s Student in Computer Engineering
-Backend Systems • Real-Time Applications • Signal Processing
+Master’s Student in Computer Engineering  
+Spring Boot • Real-time Systems • Backend Development  
