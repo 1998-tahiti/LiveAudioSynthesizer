@@ -90,7 +90,7 @@ JavaScript
 
 Clone the repository:
 
-git clone https://github.com/yourusername/your-repo-name.git
+git clone https://github.com/yourusername/LiveAudioSynthesizer.git
 
 Navigate into the project:
 
@@ -117,6 +117,6 @@ Open browser:
 http://localhost:5000
 ## Author
 
-Tasnia Jasim Tahiti
+Tasnia Jasim Tahiti  
 Master’s Student in Computer Engineering  
 Spring Boot • Real-time Systems • Backend Development  
