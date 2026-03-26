@@ -19,16 +19,23 @@ The system demonstrates practical experience in real-time streaming, concurrent 
 ### Backend:
 
 Python
+
 Flask
+
 Flask-SocketIO
+
 PyAudio
+
 NumPy
+
 Multithreading
 
 ### Frontend:
 
 HTML
+
 CSS
+
 JavaScript
 
 ## Core Concepts:
@@ -108,7 +115,7 @@ python app.py
 Open browser:
 
 http://localhost:5000
-Author
+## Author
 
 Tasnia Jasim Tahiti
 Master’s Student in Computer Engineering
